@@ -1,80 +1,88 @@
 @extends('layouts.admin')
-@section('title', isset($news) ? 'Edit Berita' : 'Tambah Berita')
-
-@section('sidebar-menu')
-@foreach([['admin.dashboard','Dashboard'],['sda.index','Data SDA'],['news.index','Berita SDA'],['admin.notifications','Laporan Masuk'],['user.index','Kelola User']] as [$r,$l])
-<a href="{{ route($r) }}" class="sidebar-item {{ request()->routeIs($r) ? 'active' : '' }}">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="12" cy="12" r="9"/></svg>
-    {{ $l }}
-</a>
-@endforeach
-@endsection
+@section('title', 'Edit Berita')
+@section('sidebar-menu') @include('admin._sidebar') @endsection
 
 @section('content')
+
 <div class="topbar">
-    <div>
-        <h1>{{ isset($news) ? 'Edit Berita' : 'Tambah Berita Baru' }}</h1>
-        <p>{{ isset($news) ? 'Perbarui konten berita' : 'Isi formulir untuk menerbitkan berita baru' }}</p>
-    </div>
-    <a href="{{ route('news.index') }}" class="btn btn-outline">← Kembali</a>
-</div>
-
-<div class="card">
-    <div class="card-header"><h3>Form Berita</h3></div>
-    <div class="card-body">
-        <form method="POST" action="{{ isset($news) ? route('news.update', $news) : route('news.store') }}" enctype="multipart/form-data">
-            @csrf
-            @if(isset($news)) @method('PUT') @endif
-
-            <div class="form-group">
-                <label class="form-label">Judul Berita <span style="color:var(--danger);">*</span></label>
-                <input type="text" name="title" class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}"
-                       placeholder="Masukkan judul berita yang menarik..."
-                       value="{{ old('title', $news->title ?? '') }}" required>
-                @error('title')<p class="form-error">{{ $message }}</p>@enderror
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Foto Berita</label>
-                <input type="file" name="image" class="form-control" accept="image/*" id="imgInput" onchange="previewImg(this)">
-                @if(isset($news) && $news->image)
-                    <div style="margin-top:.75rem;">
-                        <p style="font-size:12px;color:var(--slate-400);margin-bottom:.4rem;">Foto saat ini:</p>
-                        <img src="{{ asset('storage/'.$news->image) }}" id="previewEl" alt="Preview" style="height:140px;border-radius:10px;object-fit:cover;">
-                    </div>
-                @else
-                    <img id="previewEl" style="height:140px;border-radius:10px;object-fit:cover;margin-top:.75rem;display:none;">
-                @endif
-                <p style="font-size:12px;color:var(--slate-400);margin-top:.35rem;">Format: JPG, PNG. Maks 2MB.</p>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Isi Berita <span style="color:var(--danger);">*</span></label>
-                <textarea name="content" class="form-control {{ $errors->has('content') ? 'is-invalid' : '' }}"
-                          placeholder="Tulis isi berita secara lengkap dan informatif..." rows="10" required>{{ old('content', $news->content ?? '') }}</textarea>
-                @error('content')<p class="form-error">{{ $message }}</p>@enderror
-            </div>
-
-            <div style="display:flex;gap:10px;">
-                <button type="submit" class="btn btn-primary">
-                    {{ isset($news) ? 'Simpan Perubahan' : 'Terbitkan Berita' }}
-                </button>
-                <a href="{{ route('news.index') }}" class="btn btn-outline">Batal</a>
-            </div>
-        </form>
+    <div><h1>Edit Berita</h1><p>Perbarui konten berita</p></div>
+    <div style="display:flex;gap:.75rem;">
+        <a href="{{ route('admin.news.show', $news) }}" class="btn btn-outline">Detail</a>
+        <a href="{{ route('admin.news.index') }}" class="btn btn-outline">← Kembali</a>
     </div>
 </div>
+
+<div style="display:grid;grid-template-columns:1.6fr 1fr;gap:1.5rem;align-items:start;">
+    <div class="card">
+        <div class="card-header"><h3>Edit: {{ Str::limit($news->title, 55) }}</h3></div>
+        <div class="card-body">
+            <form method="POST" action="{{ route('admin.news.update', $news) }}" enctype="multipart/form-data">
+                @csrf @method('PUT')
+
+                <div class="form-group">
+                    <label class="form-label">Judul Berita <span style="color:var(--danger)">*</span></label>
+                    <input type="text" name="title" class="form-control"
+                           value="{{ old('title', $news->title) }}" required>
+                    @error('title')<p class="form-error">{{ $message }}</p>@enderror
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Ganti Foto
+                        <span style="font-weight:400;color:var(--slate-400);">(kosongkan jika tidak ingin diganti)</span>
+                    </label>
+                    <input type="file" name="image" id="imageInput" accept="image/*"
+                           class="form-control" onchange="previewImage(this)">
+                    @error('image')<p class="form-error">{{ $message }}</p>@enderror
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Isi Berita <span style="color:var(--danger)">*</span></label>
+                    <textarea name="content" rows="10" class="form-control" required>{{ old('content', $news->content) }}</textarea>
+                    @error('content')<p class="form-error">{{ $message }}</p>@enderror
+                </div>
+
+                <div style="display:flex;gap:10px;margin-top:1.75rem;">
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    <a href="{{ route('admin.news.index') }}" class="btn btn-outline">Batal</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div style="position:sticky;top:1.5rem;">
+        <div class="card">
+            <div class="card-header"><h3>Foto Saat Ini</h3></div>
+            <div class="card-body">
+                <div style="border-radius:12px;overflow:hidden;height:200px;background:var(--slate-100);">
+                    @if($news->image)
+                        <img id="previewImg" src="{{ asset('storage/' . $news->image) }}" alt=""
+                             style="width:100%;height:100%;object-fit:cover;">
+                    @else
+                        <div id="previewImg" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--slate-300);">
+                            <p style="font-size:13px;">Belum ada foto</p>
+                        </div>
+                    @endif
+                </div>
+                <p id="newFileInfo" style="display:none;font-size:12px;color:var(--green-700);font-weight:600;margin-top:.65rem;text-align:center;">
+                    ✓ Foto baru siap diunggah
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
 <script>
-function previewImg(input) {
+function previewImage(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = e => {
-            const el = document.getElementById('previewEl');
-            el.src = e.target.result;
-            el.style.display = 'block';
+            const el = document.getElementById('previewImg');
+            el.outerHTML = `<img id="previewImg" src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+            document.getElementById('newFileInfo').style.display = 'block';
         };
         reader.readAsDataURL(input.files[0]);
     }

@@ -1,0 +1,10 @@
+.sidebar {
+    width: 240px;
+    background: #063d2a;
+    color: #fff;
+}
+
+.topbar {
+    background: #fff;
+    border-bottom: 1px solid #eee;
+}

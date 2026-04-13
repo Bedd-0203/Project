@@ -360,23 +360,51 @@
     border-color: var(--green-200);
 }
 .n-card-img {
-    height: 190px;
-    overflow: hidden;
+    height: 200px;
     position: relative;
-    background: var(--slate-100);
+    overflow: hidden;
+    border-bottom: 1px solid var(--slate-100);
 }
-.n-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
-.n-card:hover .n-card-img img { transform: scale(1.08); }
+
+.n-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .6s ease, filter .4s ease;
+}
+
+/* Efek zoom + gelap dikit */
+.n-card:hover .n-card-img img {
+    transform: scale(1.12);
+    filter: brightness(0.85);
+}
+
+/* Overlay gradient biar elegan */
+.n-card-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.55),
+        rgba(0,0,0,0.15),
+        transparent
+    );
+}
+
+/* Tag berita jadi lebih modern */
 .n-tag {
     position: absolute;
-    top: 10px; left: 10px;
-    background: rgba(255,255,255,.92);
-    color: var(--green-800);
-    padding: 3px 11px;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(6px);
+    color: #fff;
+    padding: 5px 12px;
     border-radius: 20px;
     font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .03em;
+    font-weight: 600;
+    letter-spacing: .05em;
 }
 .n-body { padding: 1.15rem; }
 .n-date { font-size: 12px; color: var(--slate-400); margin-bottom: .4rem; }
@@ -478,61 +506,69 @@
     </div>
 </section>
 
-{{-- ══════════════ KATEGORI SDA (3 Kategori) ══════════════ --}}
+{{-- ══════════════ KATEGORI SDA (FIX 3) ══════════════ --}}
 <section class="section">
     <div class="section-inner">
         <div class="sec-header">
             <div>
                 <div class="eyebrow">Kategori SDA</div>
                 <h2 class="sec-title">Kategori Sumber Daya Alam</h2>
-                <p class="sec-sub">Jelajahi tiga bidang utama sumber daya alam yang dikelola di Kota Palembang</p>
+                <p class="sec-sub">Tiga bidang utama pengelolaan SDA Kota Palembang</p>
             </div>
         </div>
 
         @php
-        /*
-         * Gambar representasi Palembang / SDA Indonesia
-         * Diambil dari Unsplash — bebas lisensi
-         */
-        $catConfig = [
-            'Pertanian, Kehutanan & Perikanan' => [
-                'img'   => 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=900&q=80',
-                'icon'  => '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>',
-                'color' => '#1aaa76',
-            ],
-            'Pertambangan & Lingkungan Hidup' => [
-                'img'   => 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=900&q=80',
-                'icon'  => '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
-                'color' => '#d97706',
-            ],
-            'Energi & Air' => [
-                'img'   => 'https://images.unsplash.com/photo-1470770903676-69b98201ea1c?w=900&q=80',
-                'icon'  => '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
-                'color' => '#1d4ed8',
-            ],
-        ];
+        $fixedCategories = [
+    [
+        'name' => 'Pertanian, Kehutanan, Sungai & Perikanan',
+        'desc' => 'Pengelolaan hasil pertanian, hutan, sungai Musi, dan perikanan di wilayah Palembang.',
+        'img'  => 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=90',
+        'icon' => '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>',
+        'link' => '/sda?category=1'
+    ],
+    [
+        'name' => 'Pertambangan & Lingkungan Hidup',
+        'desc' => 'Pengelolaan sumber daya tambang serta pelestarian lingkungan hidup.',
+        'img'  => 'https://images.unsplash.com/photo-1581091870622-1e7e0e0a1f0d?w=1200&q=90',
+        'icon' => '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+        'link' => '/sda?category=2'
+    ],
+    [
+        'name' => 'Energi & Air',
+        'desc' => 'Pengelolaan energi serta sumber daya air untuk kebutuhan masyarakat.',
+        'img'  => 'https://images.unsplash.com/photo-1509395176047-4a66953fd231?w=1200&q=90',
+        'icon' => '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+        'link' => '/sda?category=3'
+    ],
+];
         @endphp
 
         <div class="cat-grid">
-            @foreach($categories as $index => $cat)
-            @php $cfg = $catConfig[$cat->name] ?? ['img'=>'https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=900&q=80','icon'=>'','color'=>'#1aaa76']; @endphp
-            <a href="/sda?category={{ $cat->id }}" class="cat-card">
-                <div class="cat-card-bg" style="background-image:url('{{ $cfg['img'] }}');"></div>
+            @foreach($fixedCategories as $index => $cat)
+            <a href="{{ $cat['link'] }}" class="cat-card">
+                <div class="cat-card-bg" style="background-image:url('{{ $cat['img'] }}');"></div>
                 <div class="cat-card-overlay"></div>
 
-                {{-- Nomor & jumlah SDA --}}
-                <div class="cat-count-badge">{{ $cat->sdas_count }} Data</div>
+                <div class="cat-count-badge">Kategori</div>
 
                 <div class="cat-card-body">
                     <div class="cat-card-number">Kategori {{ $index + 1 }}</div>
+
                     <div class="cat-card-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">{!! $cfg['icon'] !!}</svg>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            {!! $cat['icon'] !!}
+                        </svg>
                     </div>
-                    <h3>{{ $cat->name }}</h3>
-                    <p>{{ $cat->description ?? 'Eksplorasi data ' . strtolower($cat->name) . ' di wilayah Kota Palembang.' }}</p>
+
+                    <h3>{{ $cat['name'] }}</h3>
+                    <p>{{ $cat['desc'] }}</p>
+
                     <div class="cat-card-link">
                         Lihat Data
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                            <polyline points="12 5 19 12 12 19"/>
+                        </svg>
                     </div>
                 </div>
             </a>
@@ -541,7 +577,7 @@
     </div>
 </section>
 
-{{-- ══════════════ DATA SDA TERBARU ══════════════ --}}
+{{-- ══════════════ DATA SDA TERBARU (FIX FINAL SESUAI PERMINTAAN) ══════════════ --}}
 <section class="section bg-slate" style="padding-top:4rem;padding-bottom:4rem;">
     <div class="section-inner">
         <div class="sec-header">
@@ -550,70 +586,117 @@
                 <h2 class="sec-title">Data SDA Terbaru</h2>
                 <p class="sec-sub">Data sumber daya alam terkini yang terdaftar di Portal SDA Kota Palembang</p>
             </div>
-            <a href="/sda" style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:9px;background:var(--green-700);color:#fff;font-size:13.5px;font-weight:600;transition:all .2s;white-space:nowrap;" onmouseover="this.style.background='var(--green-800)'" onmouseout="this.style.background='var(--green-700)'">
-                Lihat Semua
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            <a href="/sda"
+               style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:9px;background:var(--green-700);color:#fff;font-size:13.5px;font-weight:600;">
+                Lihat Semua →
             </a>
         </div>
 
+        {{-- 🔥 IMAGE SMART SESUAI KATEGORI --}}
         @php
-        /* Gambar fallback per kategori untuk Data SDA */
-        $sdaImages = [
-            'Pertanian, Kehutanan & Perikanan' => [
-                'https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=600&q=75',
-                'https://images.unsplash.com/photo-1448375240586-882707db888b?w=600&q=75',
-                'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=75',
-                'https://images.unsplash.com/photo-1574781330855-d0db8cc6a79c?w=600&q=75',
-            ],
-            'Pertambangan & Lingkungan Hidup' => [
-                'https://images.unsplash.com/photo-1581093450021-4a7360e9a6b5?w=600&q=75',
-                'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=600&q=75',
-            ],
-            'Energi & Air' => [
-                'https://images.unsplash.com/photo-1470770903676-69b98201ea1c?w=600&q=75',
-                'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&q=75',
-            ],
-        ];
-        $sdaImgCounter = [];
+        function getSdaImage($category) {
+    $category = strtolower($category);
+
+    if (str_contains($category, 'sungai')) {
+        return 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=90';
+    }
+
+    if (str_contains($category, 'pertanian')) {
+        return 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1200&q=90';
+    }
+
+    if (str_contains($category, 'hutan') || str_contains($category, 'kehutanan')) {
+        return 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200&q=90';
+    }
+
+    if (str_contains($category, 'tambang') || str_contains($category, 'lingkungan')) {
+        return 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&q=90';
+    }
+
+    if (str_contains($category, 'energi') || str_contains($category, 'air')) {
+        return 'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=1200&q=90';
+    }
+
+    return 'https://images.unsplash.com/photo-1470770903676-69b98201ea1c?w=1200&q=90';
+}
         @endphp
 
         @if($latestSda->count() > 0)
         <div class="data-grid">
+
             @foreach($latestSda as $sda)
             @php
-                $catName = $sda->category->name ?? '';
-                $imgList = $sdaImages[$catName] ?? ['https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=600&q=75'];
-                $sdaImgCounter[$catName] = ($sdaImgCounter[$catName] ?? 0);
-                $imgUrl = $sda->image ? asset('storage/'.$sda->image) : $imgList[$sdaImgCounter[$catName] % count($imgList)];
-                $sdaImgCounter[$catName]++;
+                $catName = $sda->category->name ?? 'SDA';
+                $imgUrl = $sda->image 
+                    ? asset('storage/'.$sda->image) 
+                    : getSdaImage($catName);
             @endphp
+
             <a href="/detail-sda/{{ $sda->id }}" class="d-card">
-                <div class="d-card-img">
+
+                {{-- 🔥 GAMBAR --}}
+                <div class="d-card-img" style="position:relative;">
                     <img src="{{ $imgUrl }}" alt="{{ $sda->title }}" loading="lazy">
-                    <div class="d-badge">{{ $sda->category->name }}</div>
+
+                    {{-- overlay --}}
+                    <div style="
+                        position:absolute;
+                        inset:0;
+                        background:linear-gradient(to top, rgba(0,0,0,.5), transparent);
+                    "></div>
+
+                    {{-- badge --}}
+                    <div style="
+                        position:absolute;
+                        top:12px;
+                        left:12px;
+                        background:rgba(0,0,0,.6);
+                        backdrop-filter:blur(6px);
+                        color:#fff;
+                        padding:5px 12px;
+                        border-radius:20px;
+                        font-size:11px;
+                        font-weight:600;
+                    ">
+                        {{ $catName }}
+                    </div>
                 </div>
+
+                {{-- BODY --}}
                 <div class="d-body">
-                    <h4>{{ $sda->title }}</h4>
-                    <p>{{ Str::limit($sda->description, 85) }}</p>
-                    <div class="d-meta">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        {{ $sda->location }}
+                    <h4 style="font-size:15px;font-weight:700;">
+                        {{ $sda->title }}
+                    </h4>
+
+                    <p style="margin-top:4px;">
+                        {{ Str::limit($sda->description, 90) }}
+                    </p>
+
+                    <div class="d-meta" style="margin-top:8px;">
+                        📍 {{ $sda->location }}
                         <span class="d-meta-dot"></span>
                         {{ $sda->created_at->year }}
                     </div>
                 </div>
+
             </a>
             @endforeach
+
         </div>
         @else
         <div style="text-align:center;padding:3rem;color:var(--slate-400);">
-            <p>Belum ada data SDA. <a href="{{ route('login') }}" style="color:var(--green-700);">Masuk</a> untuk menambahkan.</p>
+            <p>Belum ada data SDA. 
+                <a href="{{ route('login') }}" style="color:var(--green-700);">
+                    Masuk
+                </a> untuk menambahkan.
+            </p>
         </div>
         @endif
+
     </div>
 </section>
 
-{{-- ══════════════ BERITA TERKINI ══════════════ --}}
+{{-- ══════════════ BERITA TERKINI (PREMIUM UI) ══════════════ --}}
 <section class="section">
     <div class="section-inner">
         <div class="sec-header">
@@ -622,38 +705,106 @@
                 <h2 class="sec-title">Berita Terkini</h2>
                 <p class="sec-sub">Kabar terbaru seputar pengelolaan sumber daya alam Kota Palembang</p>
             </div>
-            <a href="/news" style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:9px;background:var(--green-700);color:#fff;font-size:13.5px;font-weight:600;transition:all .2s;white-space:nowrap;" onmouseover="this.style.background='var(--green-800)'" onmouseout="this.style.background='var(--green-700)'">
-                Lihat Semua
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            <a href="/news"
+               style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:9px;background:var(--green-700);color:#fff;font-size:13.5px;font-weight:600;">
+                Lihat Semua →
             </a>
         </div>
 
+        {{-- 🔥 FUNCTION GAMBAR OTOMATIS --}}
         @php
-        $newsImages = [
-            'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=600&q=75',
-            'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=75',
-            'https://images.unsplash.com/photo-1542601906897-a13be5b8dc4f?w=600&q=75',
-            'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&q=75',
-        ];
+        function getNewsImage($text) {
+    $text = strtolower($text);
+
+    if (str_contains($text, 'sungai') || str_contains($text, 'air')) {
+        return 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200&q=90';
+    }
+
+    if (str_contains($text, 'energi') || str_contains($text, 'listrik')) {
+        return 'https://images.unsplash.com/photo-1509395176047-4a66953fd231?w=1200&q=90';
+    }
+
+    if (str_contains($text, 'tambang') || str_contains($text, 'mineral')) {
+        return 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&q=90';
+    }
+
+    if (str_contains($text, 'hutan') || str_contains($text, 'lingkungan')) {
+        return 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200&q=90';
+    }
+
+    if (str_contains($text, 'pertanian') || str_contains($text, 'sawah')) {
+        return 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1200&q=90';
+    }
+
+    return 'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=1200&q=90';
+}
         @endphp
 
         @if($latestNews->count() > 0)
         <div class="news-grid">
-            @foreach($latestNews as $i => $news)
-            @php $imgUrl = $news->image ? asset('storage/'.$news->image) : $newsImages[$i % count($newsImages)]; @endphp
+
+            @foreach($latestNews as $news)
+            @php
+                $imgUrl = $news->image 
+                    ? asset('storage/'.$news->image) 
+                    : getNewsImage($news->title . ' ' . $news->content);
+            @endphp
+
             <a href="/detail-news/{{ $news->id }}" class="n-card">
-                <div class="n-card-img">
+
+                {{-- 🔥 GAMBAR --}}
+                <div class="n-card-img" style="position:relative;overflow:hidden;">
                     <img src="{{ $imgUrl }}" alt="{{ $news->title }}" loading="lazy">
-                    <div class="n-tag">Berita</div>
+
+                    {{-- overlay gradient --}}
+                    <div style="
+                        position:absolute;
+                        inset:0;
+                        background:linear-gradient(to top, rgba(0,0,0,.6), transparent);
+                    "></div>
+
+                    {{-- label + tanggal --}}
+                    <div style="
+                        position:absolute;
+                        bottom:12px;
+                        left:12px;
+                        color:#fff;
+                        z-index:2;
+                    ">
+                        <div style="
+                            background:rgba(0,0,0,.6);
+                            backdrop-filter:blur(6px);
+                            padding:4px 10px;
+                            border-radius:20px;
+                            font-size:11px;
+                            margin-bottom:6px;
+                            display:inline-block;
+                        ">
+                            Berita
+                        </div>
+
+                        <div style="font-size:12px;opacity:.9;">
+                            {{ $news->created_at->translatedFormat('d M Y') }}
+                        </div>
+                    </div>
                 </div>
+
+                {{-- 🔥 BODY --}}
                 <div class="n-body">
-                    <div class="n-date">{{ $news->created_at->translatedFormat('d F Y') }}</div>
-                    <h4>{{ $news->title }}</h4>
-                    <p>{{ Str::limit($news->content, 90) }}</p>
+                    <h4 style="font-size:15px;font-weight:700;">
+                        {{ $news->title }}
+                    </h4>
+
+                    <p style="margin-top:4px;">
+                        {{ Str::limit($news->content, 100) }}
+                    </p>
                 </div>
+
             </a>
             @endforeach
+
         </div>
+
         @else
         <div style="text-align:center;padding:3rem;color:var(--slate-400);">
             <p>Belum ada berita tersedia.</p>

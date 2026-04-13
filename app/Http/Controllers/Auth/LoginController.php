@@ -14,7 +14,7 @@ class LoginController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
-            return $this->redirectByRole(Auth::user()->role);
+            return $this->redirectByRole(Auth::user()->role ?? 'guest');
         }
 
         return view('auth.login');
@@ -28,11 +28,6 @@ class LoginController extends Controller
         $request->validate([
             'email'    => 'required|email',
             'password' => 'required|min:6',
-        ], [
-            'email.required'    => 'Email wajib diisi.',
-            'email.email'       => 'Format email tidak valid.',
-            'password.required' => 'Password wajib diisi.',
-            'password.min'      => 'Password minimal 6 karakter.',
         ]);
 
         $credentials = $request->only('email', 'password');
@@ -41,7 +36,9 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            return $this->redirectByRole(Auth::user()->role);
+            $user = Auth::user();
+
+            return $this->redirectByRole($user->role ?? 'guest');
         }
 
         return back()
@@ -50,15 +47,16 @@ class LoginController extends Controller
     }
 
     /**
-     * Logout
+     * Logout (FIXED)
      */
     public function logout(Request $request)
     {
         Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('success', 'Berhasil keluar dari sistem.');
+        return redirect('/')->with('success', 'Berhasil logout');
     }
 
     /**
@@ -70,7 +68,7 @@ class LoginController extends Controller
             'admin'       => redirect()->route('admin.dashboard'),
             'petugas'     => redirect()->route('petugas.dashboard'),
             'masyarakat'  => redirect()->route('masyarakat.dashboard'),
-            default       => redirect('/'),
+            default       => redirect('/login'),
         };
     }
 }

@@ -1,0 +1,31 @@
+/* BUTTON */
+.btn {
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: var(--green-700);
+    color: #fff;
+}
+
+.btn-outline {
+    border: 1px solid #ddd;
+}
+
+/* CARD */
+.card {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #eee;
+}
+
+/* FORM */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}

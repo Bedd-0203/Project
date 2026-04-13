@@ -14,8 +14,11 @@ class UserController extends Controller
         $query = User::query();
 
         if ($request->filled('q')) {
-            $query->where('name', 'like', '%' . $request->q . '%')
-                  ->orWhere('email', 'like', '%' . $request->q . '%');
+            $q = $request->q;
+            $query->where(function ($b) use ($q) {
+                $b->where('name', 'like', "%$q%")
+                  ->orWhere('email', 'like', "%$q%");
+            });
         }
 
         if ($request->filled('role')) {
@@ -23,6 +26,7 @@ class UserController extends Controller
         }
 
         $users = $query->latest()->paginate(15)->withQueryString();
+
         return view('admin.user.index', compact('users'));
     }
 
@@ -35,9 +39,17 @@ class UserController extends Controller
     {
         $request->validate([
             'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users',
+            'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
             'role'     => 'required|in:admin,petugas,masyarakat',
+        ], [
+            'name.required'      => 'Nama wajib diisi.',
+            'email.required'     => 'Email wajib diisi.',
+            'email.unique'       => 'Email sudah digunakan.',
+            'password.required'  => 'Password wajib diisi.',
+            'password.min'       => 'Password minimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'role.required'      => 'Role wajib dipilih.',
         ]);
 
         User::create([
@@ -47,8 +59,8 @@ class UserController extends Controller
             'role'     => $request->role,
         ]);
 
-        return redirect()->route('user.index')
-                         ->with('success', 'User berhasil ditambahkan.');
+        return redirect()->route('admin.user.index')
+            ->with('success', 'User berhasil ditambahkan.');
     }
 
     public function show(User $user)
@@ -73,14 +85,19 @@ class UserController extends Controller
         $data = $request->only('name', 'email', 'role');
 
         if ($request->filled('password')) {
-            $request->validate(['password' => 'min:8|confirmed']);
+            $request->validate([
+                'password' => 'min:8|confirmed',
+            ], [
+                'password.min'       => 'Password minimal 8 karakter.',
+                'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            ]);
             $data['password'] = Hash::make($request->password);
         }
 
         $user->update($data);
 
-        return redirect()->route('user.index')
-                         ->with('success', 'User berhasil diperbarui.');
+        return redirect()->route('admin.user.index')
+            ->with('success', 'User berhasil diperbarui.');
     }
 
     public function destroy(User $user)
@@ -91,7 +108,7 @@ class UserController extends Controller
 
         $user->delete();
 
-        return redirect()->route('user.index')
-                         ->with('success', 'User berhasil dihapus.');
+        return redirect()->route('admin.user.index')
+            ->with('success', 'User berhasil dihapus.');
     }
 }

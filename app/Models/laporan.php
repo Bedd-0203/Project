@@ -4,21 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Report extends Model
+class Laporan extends Model
 {
     protected $fillable = [
         'user_id',
-        'title',
-        'description',
+        'judul',
+        'deskripsi',
         'image',
         'status',
         'response'
     ];
-
-    // RELASI KE USER
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-    
 }

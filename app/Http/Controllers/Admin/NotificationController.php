@@ -3,18 +3,27 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Report;
+use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
     public function index()
     {
-        $notifications = Report::with('user')
-            ->latest()
-            ->paginate(20);
+        // contoh data dummy
+        $notifications = [
+            ['title' => 'Laporan Baru', 'message' => 'Ada laporan masuk'],
+            ['title' => 'Update Sistem', 'message' => 'Sistem diperbarui'],
+        ];
 
-        $pendingCount = Report::where('status', 'pending')->count();
+        return view('admin.notifications.index', compact('notifications'));
+    }
 
-        return view('admin.notifications.index', compact('notifications', 'pendingCount'));
+    public function store(Request $request)
+    {
+        // contoh proses simpan (dummy)
+        // nanti bisa kamu hubungkan ke database
+
+        return redirect()->route('admin.notifications')
+            ->with('success', 'Notifikasi berhasil dikirim');
     }
 }

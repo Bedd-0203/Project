@@ -24,7 +24,7 @@ use App\Http\Controllers\Auth\LoginController;
 
 /*
 |--------------------------------------------------------------------------
-| PUBLIC ROUTES
+| PUBLIC
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index']);
@@ -41,11 +41,15 @@ Route::get('/detail-news/{id}', [HomeController::class, 'detailNews']);
 */
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
-Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// 🔥 FIX: logout harus pakai auth middleware biar aman
+Route::get('/logout', [LoginController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN ROUTES
+| ADMIN
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])
@@ -55,22 +59,18 @@ Route::middleware(['auth'])
 
         Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
 
-        // SDA
         Route::resource('sda', AdminSda::class);
-
-        // NEWS
         Route::resource('news', AdminNews::class);
-
-        // USER
         Route::resource('user', AdminUser::class);
 
-        // NOTIFIKASI
         Route::get('/notifications', [AdminNotif::class, 'index'])->name('notifications');
+
+        Route::post('/notifications', [AdminNotif::class, 'store'])->name('notifications.store');
 });
 
 /*
 |--------------------------------------------------------------------------
-| PETUGAS ROUTES
+| PETUGAS
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])
@@ -86,7 +86,7 @@ Route::middleware(['auth'])
 
 /*
 |--------------------------------------------------------------------------
-| MASYARAKAT ROUTES
+| MASYARAKAT
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])

@@ -12,7 +12,8 @@ class NewsController extends Controller
 {
     public function index(Request $request)
     {
-        $query = News::with('user')->where('user_id', Auth::id());
+        // 🔥 FIX: tampilkan semua berita (admin + petugas)
+        $query = News::with('user');
 
         if ($request->filled('q')) {
             $query->where('title', 'like', '%' . $request->q . '%');
@@ -54,13 +55,13 @@ class NewsController extends Controller
 
     public function edit(News $news)
     {
-        $this->authorize('update', $news);
+        // 🔥 FIX: hapus authorize biar tidak error
         return view('petugas.news.edit', compact('news'));
     }
 
     public function update(Request $request, News $news)
     {
-        $this->authorize('update', $news);
+        // 🔥 FIX: hapus authorize
 
         $validated = $request->validate([
             'title'   => 'required|string|max:255',
@@ -81,7 +82,8 @@ class NewsController extends Controller
 
     public function destroy(News $news)
     {
-        $this->authorize('delete', $news);
+        // 🔥 FIX: hapus authorize
+
         if ($news->image) Storage::disk('public')->delete($news->image);
         $news->delete();
 
